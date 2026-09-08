@@ -1,6 +1,6 @@
 # Fortified NodeGoat 
 
-This is a fork of [NodeGoat](https://github.com/owasp/nodegoat), which is a vulnerable Node.js application crafted by OWASP for learning purposes. On this fork, I've added a threat model (see below), a project board (link coming soon), and and working through the tickets to address the vulnerabilities. 
+This is a fork of [NodeGoat](https://github.com/owasp/nodegoat), which is a vulnerable Node.js application crafted by OWASP for learning purposes. On this fork, I've added a threat model (see below), a [project board](https://github.com/users/CassandraGoose/projects/5/views/1) , and and working through the tickets to address the vulnerabilities. 
 
 ## Table of Contents
 - [App](#app)
@@ -30,6 +30,8 @@ Admin:
 ![Data Flow Diagram for App](./DataFlowDiagram.png)
 
 ## STRIDE Analysis Currently (Updated throughout retrospective exploration phase)
+
+The initial results have been added based on an exploration of the codebase and the results of a SAST scan. Items may be added after the DAST is implemented or at any other time. 
 
 ![STRIDE analysis for appl](./Stride.png)
 
