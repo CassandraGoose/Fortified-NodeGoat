@@ -15,9 +15,9 @@ const { port, hostName } = require("../../../config/env/all");
 // `on` is used to hook into various events Cypress emits
 // `config` is the resolved Cypress config
 module.exports = (on, config) => {
-  "use strict";
+    "use strict";
 
-  config.baseUrl = `http://${hostName}:${port}`;
+    config.baseUrl = `http://${hostName}:${port}`;
 
-  return config;
+    return config;
 };

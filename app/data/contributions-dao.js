@@ -22,63 +22,61 @@ function ContributionsDAO(db) {
             userId: parsedUserId,
             preTax: preTax,
             afterTax: afterTax,
-            roth: roth
+            roth: roth,
         };
 
         contributionsDB.update({
-            userId
-            },
-            contributions, {
-                upsert: true
-            },
-            err => {
-                if (!err) {
-                    console.log("Updated contributions");
-                    // add user details
-                    userDAO.getUserById(parsedUserId, (err, user) => {
-
-                        if (err) return callback(err, null);
-
-                        contributions.userName = user.userName;
-                        contributions.firstName = user.firstName;
-                        contributions.lastName = user.lastName;
-                        contributions.userId = userId;
-
-                        return callback(null, contributions);
-                    });
-                } else {
-                    return callback(err, null);
-                }
-            }
-        );
-    };
-
-    this.getByUserId = (userId, callback) => {
-        contributionsDB.findOne({
-                userId: userId
-            },
-            (err, contributions) => {
-                if (err) return callback(err, null);
-
-                // Set defualt contributions if not set
-                contributions = contributions || {
-                    preTax: 2,
-                    afterTax: 2,
-                    roth: 2
-                };
-
+            userId,
+        },
+        contributions, {
+            upsert: true,
+        },
+        (err) => {
+            if (!err) {
+                console.log("Updated contributions");
                 // add user details
-                userDAO.getUserById(userId, (err, user) => {
-
+                userDAO.getUserById(parsedUserId, (err, user) => {
                     if (err) return callback(err, null);
+
                     contributions.userName = user.userName;
                     contributions.firstName = user.firstName;
                     contributions.lastName = user.lastName;
                     contributions.userId = userId;
 
-                    callback(null, contributions);
+                    return callback(null, contributions);
                 });
+            } else {
+                return callback(err, null);
             }
+        },
+        );
+    };
+
+    this.getByUserId = (userId, callback) => {
+        contributionsDB.findOne({
+            userId: userId,
+        },
+        (err, contributions) => {
+            if (err) return callback(err, null);
+
+            // Set defualt contributions if not set
+            contributions = contributions || {
+                preTax: 2,
+                afterTax: 2,
+                roth: 2,
+            };
+
+            // add user details
+            userDAO.getUserById(userId, (err, user) => {
+                if (err) return callback(err, null);
+                contributions.userName = user.userName;
+                contributions.firstName = user.firstName;
+                contributions.lastName = user.lastName;
+                contributions.userId = userId;
+
+                callback(null, contributions);
+            });
+        },
         );
     };
 }

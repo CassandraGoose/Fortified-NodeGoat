@@ -9,6 +9,5 @@ module.exports = {
     cryptoKey: "a_secure_key_for_crypto_here",
     cryptoAlgo: "aes256",
     hostName: "localhost",
-    environmentalScripts: []
+    environmentalScripts: [],
 };
-

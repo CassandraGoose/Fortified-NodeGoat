@@ -1,6 +1,6 @@
 const ContributionsDAO = require("../data/contributions-dao").ContributionsDAO;
 const {
-    environmentalScripts
+    environmentalScripts,
 } = require("../../config/config");
 
 /* The ContributionsHandler must be constructed with a connected db */
@@ -11,23 +11,22 @@ function ContributionsHandler(db) {
 
     this.displayContributions = (req, res, next) => {
         const {
-            userId
+            userId,
         } = req.session;
 
         contributionsDAO.getByUserId(userId, (error, contrib) => {
             if (error) return next(error);
 
-            contrib.userId = userId; //set for nav menu items
+            contrib.userId = userId; // set for nav menu items
             return res.render("contributions", {
                 ...contrib,
-                environmentalScripts
+                environmentalScripts,
             });
         });
     };
 
     this.handleContributionsUpdate = (req, res, next) => {
-
-        /*jslint evil: true */
+        /* jslint evil: true */
         // Insecure use of eval() to parse inputs
         const preTax = eval(req.body.preTax);
         const afterTax = eval(req.body.afterTax);
@@ -40,17 +39,17 @@ function ContributionsHandler(db) {
         const roth = parseInt(req.body.roth);
         */
         const {
-            userId
+            userId,
         } = req.session;
 
-        //validate contributions
+        // validate contributions
         const validations = [isNaN(preTax), isNaN(afterTax), isNaN(roth), preTax < 0, afterTax < 0, roth < 0];
         const isInvalid = validations.some(validation => validation);
         if (isInvalid) {
             return res.render("contributions", {
                 updateError: "Invalid contribution percentages",
                 userId,
-                environmentalScripts
+                environmentalScripts,
             });
         }
         // Prevent more than 30% contributions
@@ -58,23 +57,20 @@ function ContributionsHandler(db) {
             return res.render("contributions", {
                 updateError: "Contribution percentages cannot exceed 30 %",
                 userId,
-                environmentalScripts
+                environmentalScripts,
             });
         }
 
         contributionsDAO.update(userId, preTax, afterTax, roth, (err, contributions) => {
-
             if (err) return next(err);
 
             contributions.updateSuccess = true;
             return res.render("contributions", {
                 ...contributions,
-                environmentalScripts
+                environmentalScripts,
             });
         });
-
     };
-
 }
 
 module.exports = ContributionsHandler;

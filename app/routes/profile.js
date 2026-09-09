@@ -1,7 +1,7 @@
 const ProfileDAO = require("../data/profile-dao").ProfileDAO;
 const ESAPI = require("node-esapi");
 const {
-    environmentalScripts
+    environmentalScripts,
 } = require("../../config/config");
 
 /* The ProfileHandler must be constructed with a connected db */
@@ -12,10 +12,8 @@ function ProfileHandler(db) {
 
     this.displayProfile = (req, res, next) => {
         const {
-            userId
+            userId,
         } = req.session;
-
-
 
         profile.getByUserId(parseInt(userId), (err, doc) => {
             if (err) return next(err);
@@ -26,19 +24,18 @@ function ProfileHandler(db) {
             // doesn't end up as an XSS attack, the context is incorrect as it is encoding the firstname for HTML
             // while this same variable is also used in the context of a URL link element
             doc.website = ESAPI.encoder().encodeForHTML(doc.website);
-            // fix it by replacing the above with another template variable that is used for 
+            // fix it by replacing the above with another template variable that is used for
             // the context of a URL in a link header
             // doc.website = ESAPI.encoder().encodeForURL(doc.website)
 
             return res.render("profile", {
                 ...doc,
-                environmentalScripts
+                environmentalScripts,
             });
         });
     };
 
     this.handleProfileUpdate = (req, res, next) => {
-
         const {
             firstName,
             lastName,
@@ -46,7 +43,7 @@ function ProfileHandler(db) {
             dob,
             address,
             bankAcc,
-            bankRouting
+            bankRouting,
         } = req.body;
 
         // Fix for Section: ReDoS attack
@@ -71,12 +68,12 @@ function ProfileHandler(db) {
                 address,
                 bankAcc,
                 bankRouting,
-                environmentalScripts
+                environmentalScripts,
             });
         }
 
         const {
-            userId
+            userId,
         } = req.session;
 
         profile.updateUser(
@@ -89,23 +86,20 @@ function ProfileHandler(db) {
             bankAcc,
             bankRouting,
             (err, user) => {
-
                 if (err) return next(err);
 
                 // WARN: Applying any sting specific methods here w/o checking type of inputs could lead to DoS by HPP
-                //firstName = firstName.trim();
+                // firstName = firstName.trim();
                 user.updateSuccess = true;
                 user.userId = userId;
 
                 return res.render("profile", {
                     ...user,
-                    environmentalScripts
+                    environmentalScripts,
                 });
-            }
+            },
         );
-
     };
-
 }
 
 module.exports = ProfileHandler;

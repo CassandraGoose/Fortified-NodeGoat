@@ -3,15 +3,14 @@
 var exec = require("child_process").exec;
 
 var APP_JS_FILES = ["app/assets/js/**/*.js", "config/**/*.js", "app/data/**/*.js",
-    "app/routes/**/*.js", "server.js"
+    "app/routes/**/*.js", "server.js",
 ];
 
 var SUPPORT_JS_FILES = ["Gruntfile.js", "artifacts/**/*.js", "test/**/*.js"];
 
 var JS_FILES = APP_JS_FILES.concat(SUPPORT_JS_FILES);
 
-
-module.exports = function(grunt) {
+module.exports = function (grunt) {
     // Project Configuration
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
@@ -20,25 +19,25 @@ module.exports = function(grunt) {
                 files: APP_JS_FILES,
                 tasks: ["jsbeautifier"],
                 options: {
-                    livereload: true
-                }
+                    livereload: true,
+                },
             },
             support: {
                 files: SUPPORT_JS_FILES,
-                tasks: ["jsbeautifier"]
+                tasks: ["jsbeautifier"],
             },
             html: {
                 files: ["app/views/**"],
                 options: {
-                    livereload: true
-                }
+                    livereload: true,
+                },
             },
             css: {
                 files: ["app/assets/css/**"],
                 options: {
-                    livereload: true
-                }
-            }
+                    livereload: true,
+                },
+            },
         },
         jsbeautifier: {
             files: JS_FILES.concat(["app/views/**", "app/assets/css/**"]),
@@ -51,11 +50,11 @@ module.exports = function(grunt) {
                     maxPreserveNewlines: 10,
                     preserveNewlines: true,
                     unformatted: ["a", "sub", "sup", "b", "i", "u", "pre"],
-                    wrapLineLength: 0
+                    wrapLineLength: 0,
                 },
                 css: {
                     indentChar: " ",
-                    indentSize: 4
+                    indentSize: 4,
                 },
                 js: {
                     braceStyle: "collapse",
@@ -74,20 +73,20 @@ module.exports = function(grunt) {
                     spaceBeforeConditional: true,
                     spaceInParen: false,
                     unescapeStrings: false,
-                    wrapLineLength: 0
-                }
-            }
+                    wrapLineLength: 0,
+                },
+            },
         },
         concurrent: {
             tasks: ["nodemon", "watch"],
             options: {
-                logConcurrentOutput: true
-            }
+                logConcurrentOutput: true,
+            },
         },
         if: {
             testSecurityDependenciesInstalled: {
                 options: {
-                    test: function() {
+                    test: function () {
                         console.log("Checking to see if chromedriver is installed.");
                         try {
                             return require.resolve("chromedriver");
@@ -99,27 +98,27 @@ module.exports = function(grunt) {
                             console.log("https://github.com/vuejs/vue-router/issues/261#issuecomment-218618180");
                             throw e;
                         }
-                    }
+                    },
                 },
                 ifTrue: ["mochaTest:security"],
-                ifFalse: ["npm-install:chromedriver@^2.21.2", "mochaTest:security"]
-            }
+                ifFalse: ["npm-install:chromedriver@^2.21.2", "mochaTest:security"],
+            },
         },
         mochaTest: {
             options: {
-                reporter: "spec"
+                reporter: "spec",
             },
             unit: {
                 src: ["test/unit/*.js"],
             },
             security: {
-                src: ["test/security/*.js"]
-            }
+                src: ["test/security/*.js"],
+            },
         },
         env: {
             test: {
-                NODE_ENV: "test"
-            }
+                NODE_ENV: "test",
+            },
         },
         retire: {
             js: [],
@@ -129,8 +128,8 @@ module.exports = function(grunt) {
                 packageOnly: true,
                 jsRepository: "https://raw.github.com/bekk/retire.js/master/repository/jsrepository.json",
                 nodeRepository: "https://raw.github.com/bekk/retire.js/master/repository/npmrepository.json",
-            }
-        }
+            },
+        },
 
     });
 
@@ -148,7 +147,7 @@ module.exports = function(grunt) {
     // Making grunt default to force in order not to break the project.
     grunt.option("force", true);
 
-    grunt.registerTask("db-reset", "(Re)init the database.", function(arg) {
+    grunt.registerTask("db-reset", "(Re)init the database.", function (arg) {
         var finalEnv = process.env.NODE_ENV || arg || "development";
         var done;
 
@@ -157,7 +156,7 @@ module.exports = function(grunt) {
 
         exec(
             cmd + "node artifacts/db-reset.js",
-            function(err, stdout, stderr) {
+            function (err, stdout, stderr) {
                 if (err) {
                     grunt.log.error("db-reset:");
                     grunt.log.error(err);
@@ -166,7 +165,7 @@ module.exports = function(grunt) {
                     grunt.log.ok(stdout);
                 }
                 done();
-            }
+            },
         );
     });
 

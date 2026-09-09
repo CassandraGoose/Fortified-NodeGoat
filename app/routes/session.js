@@ -1,7 +1,7 @@
 const UserDAO = require("../data/user-dao").UserDAO;
 const AllocationsDAO = require("../data/allocations-dao").AllocationsDAO;
 const {
-    environmentalScripts
+    environmentalScripts,
 } = require("../../config/config");
 
 /* The SessionHandler must be constructed with a connected db */
@@ -25,12 +25,11 @@ function SessionHandler(db) {
     this.isAdminUserMiddleware = (req, res, next) => {
         if (req.session.userId) {
             return userDAO.getUserById(req.session.userId, (err, user) => {
-               return user && user.isAdmin ? next() : res.redirect("/login");
+                return user && user.isAdmin ? next() : res.redirect("/login");
             });
         }
         console.log("redirecting to login");
         return res.redirect("/login");
-
     };
 
     this.isLoggedInMiddleware = (req, res, next) => {
@@ -46,14 +45,14 @@ function SessionHandler(db) {
             userName: "",
             password: "",
             loginError: "",
-            environmentalScripts
+            environmentalScripts,
         });
     };
 
     this.handleLoginRequest = (req, res, next) => {
         const {
             userName,
-            password
+            password,
         } = req.body;
         userDAO.validateLogin(userName, password, (err, user) => {
             const errorMessage = "Invalid username and/or password";
@@ -83,18 +82,18 @@ function SessionHandler(db) {
                         userName: userName,
                         password: "",
                         loginError: invalidUserNameErrorMessage,
-                        //Fix for A2-2 Broken Auth - Uses identical error for both username, password error
+                        // Fix for A2-2 Broken Auth - Uses identical error for both username, password error
                         // loginError: errorMessage
-                        environmentalScripts
+                        environmentalScripts,
                     });
                 } else if (err.invalidPassword) {
                     return res.render("login", {
                         userName: userName,
                         password: "",
                         loginError: invalidPasswordErrorMessage,
-                        //Fix for A2-2 Broken Auth - Uses identical error for both username, password error
+                        // Fix for A2-2 Broken Auth - Uses identical error for both username, password error
                         // loginError: errorMessage
-                        environmentalScripts
+                        environmentalScripts,
                     });
                 } else {
                     return next(err);
@@ -131,12 +130,11 @@ function SessionHandler(db) {
             userNameError: "",
             emailError: "",
             verifyError: "",
-            environmentalScripts
+            environmentalScripts,
         });
     };
 
     const validateSignup = (userName, firstName, lastName, password, verify, email, errors) => {
-
         const USER_RE = /^.{1,20}$/;
         const FNAME_RE = /^.{1,100}$/;
         const LNAME_RE = /^.{1,100}$/;
@@ -169,8 +167,8 @@ function SessionHandler(db) {
             return false;
         }
         if (!PASS_RE.test(password)) {
-            errors.passwordError = "Password must be 8 to 18 characters" +
-                " including numbers, lowercase and uppercase letters.";
+            errors.passwordError = "Password must be 8 to 18 characters"
+                + " including numbers, lowercase and uppercase letters.";
             return false;
         }
         if (password !== verify) {
@@ -187,41 +185,37 @@ function SessionHandler(db) {
     };
 
     this.handleSignup = (req, res, next) => {
-
         const {
             email,
             userName,
             firstName,
             lastName,
             password,
-            verify
+            verify,
         } = req.body;
 
         // set these up in case we have an error case
         const errors = {
-            "userName": userName,
-            "email": email
+            userName: userName,
+            email: email,
         };
 
         if (validateSignup(userName, firstName, lastName, password, verify, email, errors)) {
-
             userDAO.getUserByUserName(userName, (err, user) => {
-
                 if (err) return next(err);
 
                 if (user) {
                     errors.userNameError = "User name already in use. Please choose another";
                     return res.render("signup", {
                         ...errors,
-                        environmentalScripts
+                        environmentalScripts,
                     });
                 }
 
                 userDAO.addUser(userName, firstName, lastName, password, email, (err, user) => {
-
                     if (err) return next(err);
 
-                    //prepare data for the user
+                    // prepare data for the user
                     prepareUserData(user, next);
                     /*
                     sessionDAO.startSession(user._id, (err, sessionId) => {
@@ -238,17 +232,16 @@ function SessionHandler(db) {
 
                         return res.render("dashboard", {
                             ...user,
-                            environmentalScripts
+                            environmentalScripts,
                         });
                     });
-
                 });
             });
         } else {
             console.log("user did not validate");
             return res.render("signup", {
                 ...errors,
-                environmentalScripts
+                environmentalScripts,
             });
         }
     };
@@ -268,7 +261,7 @@ function SessionHandler(db) {
             doc.userId = userId;
             return res.render("dashboard", {
                 ...doc,
-                environmentalScripts
+                environmentalScripts,
             });
         });
     };

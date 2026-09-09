@@ -1,8 +1,8 @@
 const {
-    BenefitsDAO
+    BenefitsDAO,
 } = require("../data/benefits-dao");
 const {
-    environmentalScripts
+    environmentalScripts,
 } = require("../../config/config");
 
 function BenefitsHandler(db) {
@@ -11,17 +11,15 @@ function BenefitsHandler(db) {
     const benefitsDAO = new BenefitsDAO(db);
 
     this.displayBenefits = (req, res, next) => {
-
         benefitsDAO.getAllNonAdminUsers((error, users) => {
-
             if (error) return next(error);
 
             return res.render("benefits", {
                 users,
                 user: {
-                    isAdmin: true
+                    isAdmin: true,
                 },
-                environmentalScripts
+                environmentalScripts,
             });
         });
     };
@@ -29,11 +27,10 @@ function BenefitsHandler(db) {
     this.updateBenefits = (req, res, next) => {
         const {
             userId,
-            benefitStartDate
+            benefitStartDate,
         } = req.body;
 
         benefitsDAO.updateBenefits(userId, benefitStartDate, (error) => {
-
             if (error) return next(error);
 
             benefitsDAO.getAllNonAdminUsers((error, users) => {
@@ -42,10 +39,10 @@ function BenefitsHandler(db) {
                 const data = {
                     users,
                     user: {
-                        isAdmin: true
+                        isAdmin: true,
                     },
                     updateSuccess: true,
-                    environmentalScripts
+                    environmentalScripts,
                 };
 
                 return res.render("benefits", data);

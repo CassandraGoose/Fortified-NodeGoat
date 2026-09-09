@@ -1,6 +1,5 @@
 /* The ResearchDAO must be constructed with a connected database object */
 function ResearchDAO(db) {
-
     "use strict";
 
     /* If this constructor is called without the "new" operator, "this" points
@@ -11,13 +10,11 @@ function ResearchDAO(db) {
     }
 
     this.getBySymbol = (symbol, callback) => {
-
         const searchCriteria = () => {
-
             if (symbol) {
                 console.log("in if symbol");
                 return {
-                    symbol
+                    symbol,
                 };
             }
         };

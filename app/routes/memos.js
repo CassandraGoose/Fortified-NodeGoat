@@ -1,6 +1,6 @@
 const MemosDAO = require("../data/memos-dao").MemosDAO;
 const {
-    environmentalScripts
+    environmentalScripts,
 } = require("../../config/config");
 
 function MemosHandler(db) {
@@ -9,7 +9,6 @@ function MemosHandler(db) {
     const memosDAO = new MemosDAO(db);
 
     this.addMemos = (req, res, next) => {
-
         memosDAO.insert(req.body.memo, (err, docs) => {
             if (err) return next(err);
             this.displayMemos(req, res, next);
@@ -17,9 +16,8 @@ function MemosHandler(db) {
     };
 
     this.displayMemos = (req, res, next) => {
-
         const {
-            userId
+            userId,
         } = req.session;
 
         memosDAO.getAllMemos((err, docs) => {
@@ -27,11 +25,10 @@ function MemosHandler(db) {
             return res.render("memos", {
                 memosList: docs,
                 userId: userId,
-                environmentalScripts
+                environmentalScripts,
             });
         });
     };
-
 }
 
 module.exports = MemosHandler;

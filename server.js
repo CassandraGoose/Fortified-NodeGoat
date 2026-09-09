@@ -11,7 +11,7 @@ const swig = require("swig");
 const MongoClient = require("mongodb").MongoClient; // Driver for connecting to MongoDB
 const http = require("http");
 const marked = require("marked");
-//const nosniff = require('dont-sniff-mimetype');
+// const nosniff = require('dont-sniff-mimetype');
 const app = express(); // Web framework to handle routing requests
 const routes = require("./app/routes");
 const { port, db, cookieSecret } = require("./config/config"); // Application config properties
@@ -71,18 +71,18 @@ MongoClient.connect(db, (err, db) => {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({
         // Mandatory in Express v4
-        extended: false
+        extended: false,
     }));
 
     // Enable session management using express middleware
     app.use(session({
         // genid: (req) => {
         //    return genuuid() // use UUIDs for session IDs
-        //},
+        // },
         secret: cookieSecret,
         // Both mandatory in Express v4
         saveUninitialized: true,
-        resave: true
+        resave: true,
         /*
         // Fix for A5 - Security MisConfig
         // Use generic cookie name
@@ -120,11 +120,10 @@ MongoClient.connect(db, (err, db) => {
     // TODO: make sure assets are declared before app.use(session())
     app.use(express.static(`${__dirname}/app/assets`));
 
-
     // Initializing marked library
     // Fix for A9 - Insecure Dependencies
     marked.setOptions({
-        sanitize: true
+        sanitize: true,
     });
     app.locals.marked = marked;
 
@@ -134,7 +133,7 @@ MongoClient.connect(db, (err, db) => {
     // Template system setup
     swig.setDefaults({
         // Autoescape disabled
-        autoescape: false
+        autoescape: false,
         /*
         // Fix for A3 - XSS, enable auto escaping
         autoescape: true // default value
@@ -153,5 +152,4 @@ MongoClient.connect(db, (err, db) => {
         console.log(`Express http server listening on port ${port}`);
     });
     */
-
 });
