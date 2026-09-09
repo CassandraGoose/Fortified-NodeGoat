@@ -6,6 +6,7 @@ This is a fork of [NodeGoat](https://github.com/owasp/nodegoat), which is a vuln
 - [App](#app)
 - [Data Flow Diagram](#data-flow-diagram)
 - [STRIDE Analysis](#stride-analysis-currently-updated-throughout-retrospective-exploration-phase)
+- [Risks](#risks)
 - [Set Up](#set-up)
 - [License](#license)
 
@@ -34,6 +35,10 @@ Admin:
 The initial results have been added based on an exploration of the codebase and the results of a SAST scan. Items may be added after the DAST is implemented or at any other time. 
 
 ![STRIDE analysis for appl](./Stride.png)
+
+## Risks
+
+![Risk matrix](./Risks.png)
 
 ## Set Up
 
