@@ -18,7 +18,6 @@ const AllocationsDAO = function(db){
     this.update = (userId, stocks, funds, bonds, callback) => {
         const parsedUserId = parseInt(userId);
 
-        // Create allocations document
         const allocations = {
             userId: userId,
             stocks: stocks,
@@ -40,7 +39,6 @@ const AllocationsDAO = function(db){
 
                     if (err) return callback(err, null);
 
-                    // add user details
                     allocations.userId = userId;
                     allocations.userName = user.userName;
                     allocations.firstName = user.firstName;
@@ -58,29 +56,15 @@ const AllocationsDAO = function(db){
         const parsedUserId = parseInt(userId);
 
         const searchCriteria = () => {
-
             if (threshold) {
-                /*
-                // Fix for A1 - 2 NoSQL Injection - escape the threshold parameter properly
-                // Fix this NoSQL Injection which doesn't sanitze the input parameter 'threshold' and allows attackers
-                // to inject arbitrary javascript code into the NoSQL query:
-                // 1. 0';while(true){}'
-                // 2. 1'; return 1 == '1
-                // Also implement fix in allocations.html for UX.                             
-                const parsedThreshold = parseInt(threshold, 10);
-                
-                if (parsedThreshold >= 0 && parsedThreshold <= 99) {
-                    return {$where: `this.userId == ${parsedUserId} && this.stocks > ${parsedThreshold}`};
-                }
-                throw `The user supplied threshold: ${parsedThreshold} was not valid.`;
-                */
-                return {
-                    $where: `this.userId == ${parsedUserId} && this.stocks > '${threshold}'`
-                };
+              const parsedThreshold = parseInt(threshold);
+
+              if (isNaN(parsedThreshold) || parsedThreshold <= 0 || parsedThreshold >= 99) {
+                throw `The user supplied threshold ${parsedThreshold} is not valid. Must be within 0-99.`;
+              }
+
+              return { userId: parsedUserId, stocks: {$gt: parsedThreshold }}
             }
-            return {
-                userId: parsedUserId
-            };
         };
 
         allocationsCol.find(searchCriteria()).toArray((err, allocations) => {
