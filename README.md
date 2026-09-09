@@ -1,6 +1,6 @@
 # Fortified NodeGoat 
 
-This is a fork of [NodeGoat](https://github.com/owasp/nodegoat), which is a vulnerable Node.js application crafted by OWASP for learning purposes. On this fork, I've added a threat model (see below), a [project board](https://github.com/users/CassandraGoose/projects/5/views/1) , and and working through the tickets to address the vulnerabilities. 
+This is a fork of [NodeGoat](https://github.com/owasp/nodegoat), which is a vulnerable Node.js application crafted by OWASP for learning purposes. On this fork, I've added a threat model (see below), risks, a [project board](https://github.com/users/CassandraGoose/projects/5/views/1), and am working through the tickets to address the vulnerabilities. 
 
 ## Table of Contents
 - [App](#app)
