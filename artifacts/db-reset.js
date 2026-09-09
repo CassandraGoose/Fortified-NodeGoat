@@ -11,29 +11,29 @@ const { db } = require("../config/config");
 
 const USERS_TO_INSERT = [
     {
-        "_id": 1,
-        "userName": "admin",
-        "firstName": "Node Goat",
-        "lastName": "Admin",
-        "password": "Admin_123",
-        //"password" : "$2a$10$8Zo/1e8KM8QzqOKqbDlYlONBOzukWXrM.IiyzqHRYDXqwB3gzDsba", // Admin_123
-        "isAdmin": true
+        _id: 1,
+        userName: "admin",
+        firstName: "Node Goat",
+        lastName: "Admin",
+        password: "Admin_123",
+        // "password" : "$2a$10$8Zo/1e8KM8QzqOKqbDlYlONBOzukWXrM.IiyzqHRYDXqwB3gzDsba", // Admin_123
+        isAdmin: true,
     }, {
-        "_id": 2,
-        "userName": "user1",
-        "firstName": "John",
-        "lastName": "Doe",
-        "benefitStartDate": "2030-01-10",
-        "password": "User1_123"
+        _id: 2,
+        userName: "user1",
+        firstName: "John",
+        lastName: "Doe",
+        benefitStartDate: "2030-01-10",
+        password: "User1_123",
         // "password" : "$2a$10$RNFhiNmt2TTpVO9cqZElb.LQM9e1mzDoggEHufLjAnAKImc6FNE86",// User1_123
     }, {
-        "_id": 3,
-        "userName": "user2",
-        "firstName": "Will",
-        "lastName": "Smith",
-        "benefitStartDate": "2025-11-30",
-        "password": "User2_123"
-        //"password" : "$2a$10$Tlx2cNv15M0Aia7wyItjsepeA8Y6PyBYaNdQqvpxkIUlcONf1ZHyq", // User2_123
+        _id: 3,
+        userName: "user2",
+        firstName: "Will",
+        lastName: "Smith",
+        benefitStartDate: "2025-11-30",
+        password: "User2_123",
+        // "password" : "$2a$10$Tlx2cNv15M0Aia7wyItjsepeA8Y6PyBYaNdQqvpxkIUlcONf1ZHyq", // User2_123
     }];
 
 const tryDropCollection = (db, name) => {
@@ -58,9 +58,8 @@ const parseResponse = (err, res, comm) => {
     console.log(JSON.stringify(res));
 };
 
-
 // Starting here
-MongoClient.connect(db, (err, db) =>  {
+MongoClient.connect(db, (err, db) => {
     if (err) {
         console.log("ERROR: connect");
         console.log(JSON.stringify(err));
@@ -73,12 +72,12 @@ MongoClient.connect(db, (err, db) =>  {
         "allocations",
         "contributions",
         "memos",
-        "counters"
+        "counters",
     ];
 
     // remove existing data (if any), we don't want to look for errors here
     console.log("Dropping existing collections");
-    const dropPromises = collectionNames.map((name) => tryDropCollection(db, name));
+    const dropPromises = collectionNames.map(name => tryDropCollection(db, name));
 
     // Wait for all drops to finish (or fail) before continuing
     Promise.all(dropPromises).then(() => {
@@ -89,14 +88,14 @@ MongoClient.connect(db, (err, db) =>  {
         // reset unique id counter
         countersCol.insert({
             _id: "userId",
-            seq: 3
+            seq: 3,
         }, (err, data) => {
             parseResponse(err, data, "countersCol.insert");
         });
 
         // insert admin and test users
         console.log("Users to insert:");
-        USERS_TO_INSERT.forEach((user) => console.log(JSON.stringify(user)));
+        USERS_TO_INSERT.forEach(user => console.log(JSON.stringify(user)));
 
         usersCol.insertMany(USERS_TO_INSERT, (err, data) => {
             const finalAllocations = [];
@@ -117,7 +116,7 @@ MongoClient.connect(db, (err, db) =>  {
                     userId: user._id,
                     stocks: stocks,
                     funds: funds,
-                    bonds: 100 - (stocks + funds)
+                    bonds: 100 - (stocks + funds),
                 });
             });
 
@@ -129,7 +128,6 @@ MongoClient.connect(db, (err, db) =>  {
                 console.log("Database reset performed successfully");
                 process.exit(0);
             });
-
         });
     });
 });

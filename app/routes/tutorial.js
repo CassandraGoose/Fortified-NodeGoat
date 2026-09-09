@@ -1,6 +1,6 @@
 const express = require("express");
 const {
-    environmentalScripts
+    environmentalScripts,
 } = require("../../config/config");
 
 const router = express.Router();
@@ -8,7 +8,7 @@ const router = express.Router();
 router.get("/", (req, res) => {
     "use strict";
     return res.render("tutorial/a1", {
-        environmentalScripts
+        environmentalScripts,
     });
 });
 
@@ -24,14 +24,14 @@ const pages = [
     "a9",
     "a10",
     "redos",
-    "ssrf"
+    "ssrf",
 ];
 
-for(const page of pages) {
+for (const page of pages) {
     router.get(`/${page}`, (req, res) => {
         "use strict";
         return res.render(`tutorial/${page}`, {
-            environmentalScripts
+            environmentalScripts,
         });
     });
 }

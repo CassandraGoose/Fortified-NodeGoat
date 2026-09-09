@@ -1,6 +1,5 @@
 /* The BenefitsDAO must be constructed with a connected database object */
 function BenefitsDAO(db) {
-
     "use strict";
 
     /* If this constructor is called without the "new" operator, "this" points
@@ -12,30 +11,30 @@ function BenefitsDAO(db) {
 
     const usersCol = db.collection("users");
 
-    this.getAllNonAdminUsers = callback => {
+    this.getAllNonAdminUsers = (callback) => {
         usersCol.find({
-            "isAdmin": {
-                $ne: true
-            }
+            isAdmin: {
+                $ne: true,
+            },
         }).toArray((err, users) => callback(null, users));
     };
 
     this.updateBenefits = (userId, startDate, callback) => {
         usersCol.update({
-                _id: parseInt(userId)
-            }, {
-                $set: {
-                    benefitStartDate: startDate
-                }
+            _id: parseInt(userId),
+        }, {
+            $set: {
+                benefitStartDate: startDate,
             },
-            (err, result) => {
-                if (!err) {
-                    console.log("Updated benefits");
-                    return callback(null, result);
-                }
-
-                return callback(err, null);
+        },
+        (err, result) => {
+            if (!err) {
+                console.log("Updated benefits");
+                return callback(null, result);
             }
+
+            return callback(err, null);
+        },
         );
     };
 }

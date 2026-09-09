@@ -9,7 +9,6 @@ const tutorialRouter = require("./tutorial");
 const ErrorHandler = require("./error").errorHandler;
 
 const index = (app, db) => {
-
     "use strict";
 
     const sessionHandler = new SessionHandler(db);
@@ -23,7 +22,7 @@ const index = (app, db) => {
     // Middleware to check if a user is logged in
     const isLoggedIn = sessionHandler.isLoggedInMiddleware;
 
-    //Middleware to check if user has admin rights
+    // Middleware to check if user has admin rights
     const isAdmin = sessionHandler.isAdminUserMiddleware;
 
     // The main page of the app

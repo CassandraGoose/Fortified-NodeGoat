@@ -1,6 +1,6 @@
 const AllocationsDAO = require("../data/allocations-dao").AllocationsDAO;
 const {
-    environmentalScripts
+    environmentalScripts,
 } = require("../../config/config");
 
 function AllocationsHandler(db) {
@@ -14,10 +14,10 @@ function AllocationsHandler(db) {
         const { userId } = req.session;
         */
         const {
-            userId
+            userId,
         } = req.params;
         const {
-            threshold
+            threshold,
         } = req.query;
 
         allocationsDAO.getByUserIdAndThreshold(userId, threshold, (err, allocations) => {
@@ -25,7 +25,7 @@ function AllocationsHandler(db) {
             return res.render("allocations", {
                 userId,
                 allocations,
-                environmentalScripts
+                environmentalScripts,
             });
         });
     };
