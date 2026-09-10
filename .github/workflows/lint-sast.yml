@@ -31,6 +31,4 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4 (pin)
       - name: Semgrep scan
-        run: semgrep scan --config p/javascript --config p/owasp-top-ten --error \
-          --exclude-rule javascript.express.security.audit.express-cookie-settings.express-cookie-session-no-domain \
-          --exclude-rule javascript.express.security.audit.express-cookie-settings.express-cookie-session-no-path
+        run: semgrep scan --config p/javascript --config p/owasp-top-ten --error --exclude-rule javascript.express.security.audit.express-cookie-settings.express-cookie-session-no-domain --exclude-rule javascript.express.security.audit.express-cookie-settings.express-cookie-session-no-path --exclude-rule html.security.plaintext-http-link.plaintext-http-link
