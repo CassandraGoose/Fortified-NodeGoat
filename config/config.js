@@ -1,7 +1,6 @@
-const _ = require("underscore");
 const path = require("path");
 const util = require("util");
-
+require("dotenv").config();
 const finalEnv = process.env.NODE_ENV || "development";
 
 const allConf = require(path.resolve(__dirname + "/../config/env/all.js"));
