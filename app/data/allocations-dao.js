@@ -1,11 +1,8 @@
 const UserDAO = require("./user-dao").UserDAO;
 
-/* The AllocationsDAO must be constructed with a connected database object */
 const AllocationsDAO = function (db) {
     "use strict";
 
-    /* If this constructor is called without the "new" operator, "this" points
-     * to the global object. Log a warning and call it correctly. */
     if (false === (this instanceof AllocationsDAO)) {
         console.log("Warning: AllocationsDAO constructor called without 'new' operator");
         return new AllocationsDAO(db);
@@ -17,7 +14,6 @@ const AllocationsDAO = function (db) {
     this.update = (userId, stocks, funds, bonds, callback) => {
         const parsedUserId = parseInt(userId);
 
-        // Create allocations document
         const allocations = {
             userId: userId,
             stocks: stocks,
@@ -36,7 +32,6 @@ const AllocationsDAO = function (db) {
                 userDAO.getUserById(userId, (err, user) => {
                     if (err) return callback(err, null);
 
-                    // add user details
                     allocations.userId = userId;
                     allocations.userName = user.userName;
                     allocations.firstName = user.firstName;
