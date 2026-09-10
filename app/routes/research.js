@@ -7,11 +7,16 @@ const {
 function ResearchHandler(db) {
     "use strict";
 
-    const researchDAO = new ResearchDAO(db);
+    new ResearchDAO(db);
 
     this.displayResearch = (req, res) => {
         if (req.query.symbol) {
-            const url = req.query.url + req.query.symbol;
+            const regex = /^[A-Za-z.]{1,10}$/;
+            if (!regex.test(req.query.symbol)) throw "The supplied string must be a stock symbol.";
+            // technically, for functionality's sake we'd need to get around Yahoo's bot limit situation because we're flagged as a bot
+            // but that's out of the scope of this project!
+            const targetUrl = "https://finance.yahoo.com/quote/";
+            const url = targetUrl + req.query.symbol.toUpperCase();
             return needle.get(url, (error, newResponse, body) => {
                 if (!error && newResponse.statusCode === 200) {
                     res.writeHead(200, {
