@@ -64,6 +64,8 @@ const index = (app, db) => {
     // Handle redirect for learning resources link
     app.get("/learn", isLoggedIn, (req, res) => {
         // Insecure way to handle redirects by taking redirect url from query string
+        // Intentional lab vulnerability: A2 tutorial demos exercise the open redirect; kept for teaching.
+        // nosemgrep: javascript.express.security.audit.express-open-redirect.express-open-redirect
         return res.redirect(req.query.url);
     });
 

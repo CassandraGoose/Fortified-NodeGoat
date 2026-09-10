@@ -64,45 +64,23 @@ MongoClient.connect(db, (err, db) => {
     app.use(nosniff());
     */
 
-    // Adding/ remove HTTP Headers for security
     app.use(favicon(__dirname + "/app/assets/favicon.ico"));
 
-    // Express middleware to populate "req.body" so we can access POST variables
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({
-        // Mandatory in Express v4
         extended: false,
     }));
 
-    // Enable session management using express middleware
     app.use(session({
-        // genid: (req) => {
-        //    return genuuid() // use UUIDs for session IDs
-        // },
         secret: cookieSecret,
-        // Both mandatory in Express v4
         saveUninitialized: true,
         resave: true,
-        /*
-        // Fix for A5 - Security MisConfig
-        // Use generic cookie name
-        key: "sessionId",
-        */
-
-        /*
-        // Fix for A3 - XSS
-        // TODO: Add "maxAge"
         cookie: {
-            httpOnly: true
-            // Remember to start an HTTPS server to get this working
-            // secure: true
-        }
-        */
-
-        cookie: {
+            name: "site-session",
             expires: new Date(Date.now() + 1000 * 60 * 30),
+            secure: true,
+            httpOnly: true,
         },
-
     }));
 
     /*
@@ -116,7 +94,6 @@ MongoClient.connect(db, (err, db) => {
     });
     */
 
-    // Register templating engine
     app.engine(".html", consolidate.swig);
     app.set("view engine", "html");
     app.set("views", `${__dirname}/app/views`);
@@ -131,15 +108,12 @@ MongoClient.connect(db, (err, db) => {
     });
     app.locals.marked = marked;
 
-    // Application routes
     routes(app, db);
 
-    // Template system setup
     swig.setDefaults({
         autoescape: true,
     });
 
-    // Insecure HTTP connection
     http.createServer(app).listen(port, () => {
         console.log(`Express http server listening on port ${port}`);
     });
