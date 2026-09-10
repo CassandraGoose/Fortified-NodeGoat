@@ -1,9 +1,9 @@
-/* The ProfileDAO must be constructed with a connected database object */
+const crypto = require("crypto");
+const { cryptoAlgo, cryptoKey } = require("../../config/config");
+
 function ProfileDAO(db) {
     "use strict";
 
-    /* If this constructor is called without the "new" operator, "this" points
-     * to the global object. Log a warning and call it correctly. */
     if (false === (this instanceof ProfileDAO)) {
         console.log("Warning: ProfileDAO constructor called without 'new' operator");
         return new ProfileDAO(db);
@@ -11,35 +11,22 @@ function ProfileDAO(db) {
 
     const users = db.collection("users");
 
-    /* Fix for A6 - Sensitive Data Exposure
-
-    // Use crypto module to save sensitive data such as ssn, dob in encrypted format
-    const crypto = require("crypto");
-    const config = require("../../config/config");
-
-    /// Helper method create initialization vector
-    // By default the initialization vector is not secure enough, so we create our own
-    const createIV = () => {
-        // create a random salt for the PBKDF2 function - 16 bytes is the minimum length according to NIST
-        const salt = crypto.randomBytes(16);
-        return crypto.pbkdf2Sync(config.cryptoKey, salt, 100000, 512, "sha512");
+    const encrypt = (plainText) => {
+        const iv = crypto.randomBytes(12);
+        const cipher = crypto.createCipheriv(cryptoAlgo, cryptoKey, iv);
+        const encrypted = Buffer.concat([cipher.update(plainText, "utf8"), cipher.final()]);
+        const tag = cipher.getAuthTag();
+        return `${iv.toString("hex")}:${encrypted.toString("hex")}:${tag.toString("hex")}`;
     };
 
-    // Helper methods to encryt / decrypt
-    const encrypt = (toEncrypt) => {
-        config.iv = createIV();
-        const cipher = crypto.createCipheriv(config.cryptoAlgo, config.cryptoKey, config.iv);
-        return `${cipher.update(toEncrypt, "utf8", "hex")} ${cipher.final("hex")}`;
+    const decrypt = (ciphertext) => {
+        const [ivHex, encryptedHex, tagHex] = ciphertext.split(":");
+        const decipher = crypto.createDecipheriv(cryptoAlgo, cryptoKey, Buffer.from(ivHex, "hex"));
+        decipher.setAuthTag(Buffer.from(tagHex, "hex"));
+        return decipher.update(encryptedHex, "hex", "utf8") + decipher.final("utf8");
     };
-
-    const decrypt = (toDecrypt) => {
-        const decipher = crypto.createDecipheriv(config.cryptoAlgo, config.cryptoKey, config.iv);
-        return `${decipher.update(toDecrypt, "hex", "utf8")} ${decipher.final("utf8")}`;
-    };
-    */
 
     this.updateUser = (userId, firstName, lastName, ssn, dob, address, bankAcc, bankRouting, callback) => {
-        // Create user document
         const user = {};
         if (firstName) {
             user.firstName = firstName;
@@ -48,30 +35,20 @@ function ProfileDAO(db) {
             user.lastName = lastName;
         }
         if (address) {
-            user.address = address;
+            user.address = encrypt(address);
         }
         if (bankAcc) {
-            user.bankAcc = bankAcc;
+            user.bankAcc = encrypt(bankAcc);
         }
         if (bankRouting) {
-            user.bankRouting = bankRouting;
+            user.bankRouting = encrypt(bankRouting);
         }
         if (ssn) {
-            user.ssn = ssn;
-        }
-        if (dob) {
-            user.dob = dob;
-        }
-        /*
-        // Fix for A7 - Sensitive Data Exposure
-        // Store encrypted ssn and DOB
-        if(ssn) {
             user.ssn = encrypt(ssn);
         }
-        if(dob) {
+        if (dob) {
             user.dob = encrypt(dob);
         }
-        */
 
         users.update({
             _id: parseInt(userId),
@@ -95,12 +72,17 @@ function ProfileDAO(db) {
         },
         (err, user) => {
             if (err) return callback(err, null);
-            /*
-                // Fix for A6 - Sensitive Data Exposure
-                // Decrypt ssn and DOB values to display to user
-                user.ssn = user.ssn ? decrypt(user.ssn) : "";
+            try {
+                user.address = user.address ? decrypt(user.address) : "";
+                user.bankAcc = user.bankAcc ? decrypt(user.bankAcc) : "";
+                user.bankRouting = user.bankRouting ? decrypt(user.bankRouting) : "";
                 user.dob = user.dob ? decrypt(user.dob) : "";
-                */
+                user.ssn = user.ssn ? decrypt(user.ssn) : "";
+
+            // eslint-disable-next-line no-unused-vars
+            } catch (error) {
+                return callback(new Error("Information decryption failed"));
+            }
 
             callback(null, user);
         },
