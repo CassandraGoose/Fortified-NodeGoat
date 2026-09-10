@@ -99,6 +99,10 @@ MongoClient.connect(db, (err, db) => {
         }
         */
 
+        cookie: {
+            expires: new Date(Date.now() + 1000 * 60 * 30),
+        },
+
     }));
 
     /*
