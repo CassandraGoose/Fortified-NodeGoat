@@ -1,11 +1,8 @@
 const bcrypt = require("bcrypt-nodejs");
 
-/* The UserDAO must be constructed with a connected database object */
 function UserDAO(db) {
     "use strict";
 
-    /* If this constructor is called without the "new" operator, "this" points
-     * to the global object. Log a warning and call it correctly. */
     if (false === (this instanceof UserDAO)) {
         console.log("Warning: UserDAO constructor called without 'new' operator");
         return new UserDAO(db);
@@ -14,21 +11,16 @@ function UserDAO(db) {
     const usersCol = db.collection("users");
 
     this.addUser = (userName, firstName, lastName, password, email, callback) => {
-        // Create user document
+        const saltRounds = 10;
+
         const user = {
             userName,
             firstName,
             lastName,
             benefitStartDate: this.getRandomFutureDate(),
-            password, // received from request param
-            /*
-            // Fix for A2-1 - Broken Auth
-            // Stores password  in a safer way using one way encryption and salt hashing
-            password: bcrypt.hashSync(password, bcrypt.genSaltSync())
-            */
+            password: bcrypt.hashSync(password, saltRounds),
         };
 
-        // Add email if set
         if (email) {
             user.email = email;
         }
@@ -53,17 +45,10 @@ function UserDAO(db) {
     };
 
     this.validateLogin = (userName, password, callback) => {
-        // Helper function to compare passwords
-        const comparePassword = (fromDB, fromUser) => {
-            return fromDB === fromUser;
-            /*
-            // Fix for A2-Broken Auth
-            // compares decrypted password stored in this.addUser()
-            return bcrypt.compareSync(fromDB, fromUser);
-            */
+        const comparePassword = (password, hash) => {
+            return bcrypt.compareSync(password, hash);
         };
 
-        // Callback to pass to MongoDB that validates a user document
         const validateUserDoc = (err, user) => {
             if (err) return callback(err, null);
 
@@ -72,13 +57,12 @@ function UserDAO(db) {
                     callback(null, user);
                 } else {
                     const invalidPasswordError = new Error("Invalid password");
-                    // Set an extra field so we can distinguish this from a db error
+
                     invalidPasswordError.invalidPassword = true;
                     callback(invalidPasswordError, null);
                 }
             } else {
                 const noSuchUserError = new Error("User: " + user + " does not exist");
-                // Set an extra field so we can distinguish this from a db error
                 noSuchUserError.noSuchUser = true;
                 callback(noSuchUserError, null);
             }
@@ -89,7 +73,6 @@ function UserDAO(db) {
         }, validateUserDoc);
     };
 
-    // This is the good one, see the next function
     this.getUserById = (userId, callback) => {
         usersCol.findOne({
             _id: parseInt(userId),
@@ -116,4 +99,4 @@ function UserDAO(db) {
     };
 }
 
-module.exports = { UserDAO };
+module.exports = { UserDAO };
