@@ -7,6 +7,6 @@ module.exports = {
     db,
     cookieSecret: process.env.COOKIE_SECRET,
     cryptoKey: process.env.CRYPTO_KEY,
-    cryptoAlgo: "aes256",
+    cryptoAlgo: "aes-256-gcm",
     environmentalScripts: [],
 };
