@@ -75,7 +75,7 @@ this.isAdminUserMiddleware = function(req, res, next) {
              }
         });
     } else {
-        console.log("redirecting to login");
+        console.log("redirecting to login, view");
         return res.redirect("/login");
     }
 };
