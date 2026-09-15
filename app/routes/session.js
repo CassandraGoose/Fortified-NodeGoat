@@ -4,7 +4,6 @@ const {
     environmentalScripts,
 } = require("../../config/config");
 
-/* The SessionHandler must be constructed with a connected db */
 function SessionHandler(db) {
     "use strict";
 
@@ -12,7 +11,6 @@ function SessionHandler(db) {
     const allocationsDAO = new AllocationsDAO(db);
 
     const prepareUserData = (user, next) => {
-        // Generate random allocations
         const stocks = Math.floor((Math.random() * 40) + 1);
         const funds = Math.floor((Math.random() * 40) + 1);
         const bonds = 100 - (stocks + funds);
@@ -36,7 +34,7 @@ function SessionHandler(db) {
         if (req.session.userId) {
             return next();
         }
-        console.log("redirecting to login");
+        console.log("redirecting to login is logged in middleware");
         return res.redirect("/login");
     };
 
@@ -100,20 +98,12 @@ function SessionHandler(db) {
                 }
             }
 
-            // A2-Broken Authentication and Session Management
-            // Upon login, a security best practice with regards to cookies session management
-            // would be to regenerate the session id so that if an id was already created for
-            // a user on an insecure medium (i.e: non-HTTPS website or otherwise), or if an
-            // attacker was able to get their hands on the cookie id before the user logged-in,
-            // then the old session id will render useless as the logged-in user with new privileges
-            // holds a new session id now.
+            return req.session.regenerate((err) => {
+                if (err) return next(err);
+                req.session.userId = user._id;
 
-            // Fix the problem by regenerating a session in each login
-            // by wrapping the below code as a function callback for the method req.session.regenerate()
-            // i.e:
-            // `req.session.regenerate(() => {})`
-            req.session.userId = user._id;
-            return res.redirect(user.isAdmin ? "/benefits" : "/dashboard");
+                return res.redirect(user.isAdmin ? "/benefits" : "/dashboard");
+            });
         });
     };
 

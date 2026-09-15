@@ -9,4 +9,5 @@ module.exports = {
     cryptoKey: process.env.CRYPTO_KEY,
     cryptoAlgo: "aes-256-gcm",
     environmentalScripts: [],
+    nodeEnv: process.env.NODE_ENV,
 };
