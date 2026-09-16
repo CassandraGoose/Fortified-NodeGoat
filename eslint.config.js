@@ -11,6 +11,11 @@ const stylisticConfig = stylistic.configs.customize({
 });
 
 module.exports = [
+    // Vendored third-party libraries (jquery, bootstrap, chart/raphael/morris, html5shiv, ...) are
+    // shipped in-tree under app/assets/vendor and are not our source — don't lint them.
+    {
+        ignores: ["app/assets/vendor/**"],
+    },
     js.configs.recommended,
     {
         files: ["**/*.js"],
@@ -23,12 +28,16 @@ module.exports = [
         },
     },
     {
-        files: ["test/e2e/**/*.js"],
+        files: ["test/e2e/**/*.js", "test/security/**/*.js"],
         languageOptions: {
             globals: {
                 ...globals.node,
+                ...globals.mocha, // describe, it, before, after, beforeEach, afterEach, context, ...
+                ...globals.chai, // expect, assert (Cypress exposes chai)
                 cy: "readonly",
                 Cypress: "readonly",
+                expect: "readonly", // Cypress exposes Chai v4's assert/expect
+                assert: "readonly",
             },
         },
     },

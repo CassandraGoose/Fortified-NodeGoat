@@ -38,7 +38,7 @@ function SessionHandler(db) {
         return res.redirect("/login");
     };
 
-    this.displayLoginPage = (req, res, next) => {
+    this.displayLoginPage = (req, res) => {
         return res.render("login", {
             userName: "",
             password: "",
@@ -53,7 +53,7 @@ function SessionHandler(db) {
             password,
         } = req.body;
         userDAO.validateLogin(userName, password, (err, user) => {
-            const errorMessage = "Invalid username and/or password";
+            // const errorMessage = "Invalid username and/or password";
             const invalidUserNameErrorMessage = "Invalid username";
             const invalidPasswordErrorMessage = "Invalid password";
             if (err) {
@@ -161,6 +161,9 @@ function SessionHandler(db) {
                 + " including numbers, lowercase and uppercase letters.";
             return false;
         }
+
+        // both password and verify are supplied by the same user for sign up purposes, this wouldn't reveal anything on our end or negative for a user.
+        // eslint-disable-next-line security/detect-possible-timing-attacks
         if (password !== verify) {
             errors.verifyError = "Password must match";
             return false;
