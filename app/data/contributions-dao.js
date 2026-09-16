@@ -81,4 +81,4 @@ function ContributionsDAO(db) {
     };
 }
 
-module.exports = { ContributionsDAO };
+module.exports = { ContributionsDAO };

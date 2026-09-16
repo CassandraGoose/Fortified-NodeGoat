@@ -15,7 +15,7 @@ const USERS_TO_INSERT = [
         userName: "admin",
         firstName: "Node Goat",
         lastName: "Admin",
-        password : "$2b$10$N.Jam1yTxehISZiT5HzRH.8reLrlV3JVKdrTBaTiT1ziKAo0JW/yi", // Admin_123
+        password: "$2b$10$N.Jam1yTxehISZiT5HzRH.8reLrlV3JVKdrTBaTiT1ziKAo0JW/yi", // Admin_123
         isAdmin: true,
     }, {
         _id: 2,
@@ -34,8 +34,8 @@ const USERS_TO_INSERT = [
     }];
 
 const tryDropCollection = (db, name) => {
-    return new Promise((resolve, reject) => {
-        db.dropCollection(name, (err, data) => {
+    return new Promise((resolve) => {
+        db.dropCollection(name, (err) => {
             if (!err) {
                 console.log(`Dropped collection: ${name}`);
             }

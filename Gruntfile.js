@@ -154,6 +154,8 @@ module.exports = function (grunt) {
         done = this.async();
         var cmd = process.platform === "win32" ? "NODE_ENV=" + finalEnv + " & " : "NODE_ENV=" + finalEnv + " ";
 
+        // finalEnv comes from env or local system and isn't manipulatable via an attacker deployed
+        // eslint-disable-next-line security/detect-child-process
         exec(
             cmd + "node artifacts/db-reset.js",
             function (err, stdout, stderr) {
